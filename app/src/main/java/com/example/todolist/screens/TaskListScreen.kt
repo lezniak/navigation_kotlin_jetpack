@@ -6,6 +6,7 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -28,8 +29,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.toMutableStateList
@@ -40,6 +43,8 @@ import androidx.compose.ui.semantics.Role.Companion.Image
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.todolist.model.Task
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun TaskScreen(modifier: Modifier = Modifier) {
@@ -71,7 +76,7 @@ fun TaskCard(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(text = title)
-                    Row(){
+                    Row() {
                         IconButton(onClick = { onExtendedChange(!isExtended.value) }) {
                             Image(
                                 imageVector = if (!isExtended.value) Icons.Default.ExpandMore else Icons.Default.ExpandLess,
@@ -96,33 +101,26 @@ fun TaskCard(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TaskList(modifier: Modifier = Modifier) {
-    val array = ArrayList<Task>().toMutableStateList()
-    for (i in 0..10) {
-        array.add(Task(i.toString(), i.toString(), rememberSaveable {
-            mutableStateOf(false)
-        }))
+    val array = remember {
+        mutableStateListOf<Task>().apply {
+            for (i in 0..10) {
+                add(Task(i.toString(), i.toString(), mutableStateOf(false)))
+            }
+        }
     }
 
     LazyColumn {
         items(items = array) { item ->
-            var visible by remember { mutableStateOf(true) }
-
-            AnimatedVisibility(
-                visible = visible,
-                enter = fadeIn() + expandVertically(),
-                exit = fadeOut() + shrinkVertically()
-            )
-            {
-                TaskCard(
-                    task = item,
-                    onExtendedChange = { bool -> item.isExtended.value = bool },
-                    onClear = {
-                        array.remove(item)
-                        visible = false
-                    })
-            }
+            TaskCard(
+                modifier = Modifier.animateItemPlacement(),
+                task = item,
+                onExtendedChange = { bool -> item.isExtended.value = bool },
+                onClear = {
+                    array.remove(item)
+                })
         }
     }
 }
