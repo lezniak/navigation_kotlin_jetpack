@@ -1,6 +1,11 @@
 package com.example.todolist.screens
 
 import android.widget.ImageButton
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,6 +18,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material3.Card
@@ -26,6 +32,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,60 +43,90 @@ import com.example.todolist.model.Task
 
 @Composable
 fun TaskScreen(modifier: Modifier = Modifier) {
-    
+
 }
 
 @Composable
-fun TaskCard(modifier: Modifier = Modifier,
-             title: String,
-             createDate: String,
-             description: String,
-             isExtended : Boolean,
-             onExtendedChange : (Boolean) -> Unit) {
+fun TaskCard(
+    modifier: Modifier = Modifier,
+    task: Task,
+    onClear: (Task) -> Unit,
+    onExtendedChange: (Boolean) -> Unit
+) {
 
-    Card(modifier = modifier
-        .fillMaxWidth()
-        .padding(2.dp)) {
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(2.dp)
+    ) {
+        with(task) {
+            Column(
+                modifier
+                    .fillMaxWidth()
+                    .padding(4.dp)
+            ) {
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(text = title)
+                    Row(){
+                        IconButton(onClick = { onExtendedChange(!isExtended.value) }) {
+                            Image(
+                                imageVector = if (!isExtended.value) Icons.Default.ExpandMore else Icons.Default.ExpandLess,
+                                contentDescription = null
+                            )
+                        }
+                        IconButton(onClick = { onClear(task) }) {
+                            Image(imageVector = Icons.Default.Clear, contentDescription = null)
+                        }
+                    }
 
-        Column(
-            modifier
-                .fillMaxWidth()
-                .padding(4.dp)) {
-            Row(horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
-                Text(text = title)
-                IconButton(onClick = { onExtendedChange(!isExtended) }) {
-                    Image(imageVector = if (!isExtended) Icons.Default.ExpandMore else Icons.Default.ExpandLess, contentDescription = null)
+                }
+                if (isExtended.value) {
+                    HorizontalDivider(color = Color.Black, thickness = 1.dp)
+                    Text(text = "1999.20.20")
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(text = description)
                 }
 
             }
-            if (isExtended){
-                HorizontalDivider(color = Color.Black, thickness = 1.dp)
-                Text(text = createDate)
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(text = description)
-            }
-
         }
-
-
     }
 }
 
 @Composable
 fun TaskList(modifier: Modifier = Modifier) {
-    val array = ArrayList<Task>()
-    for (i in 0..10){
-        array.add(Task(i.toString(),i.toString(), rememberSaveable {
+    val array = ArrayList<Task>().toMutableStateList()
+    for (i in 0..10) {
+        array.add(Task(i.toString(), i.toString(), rememberSaveable {
             mutableStateOf(false)
         }))
     }
 
     LazyColumn {
         items(items = array) { item ->
-            TaskCard(title = item.title, createDate = "2024.07.09 19:43", description = item.description, onExtendedChange = { bool -> item.isExtended.value = bool}, isExtended = item.isExtended.value)
+            var visible by remember { mutableStateOf(true) }
+
+            AnimatedVisibility(
+                visible = visible,
+                enter = fadeIn() + expandVertically(),
+                exit = fadeOut() + shrinkVertically()
+            )
+            {
+                TaskCard(
+                    task = item,
+                    onExtendedChange = { bool -> item.isExtended.value = bool },
+                    onClear = {
+                        array.remove(item)
+                        visible = false
+                    })
+            }
         }
     }
 }
+
 @Preview
 @Composable
 private fun TaskCardPreview() {

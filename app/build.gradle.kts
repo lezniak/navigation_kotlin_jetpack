@@ -50,6 +50,9 @@ android {
 }
 
 dependencies {
+    implementation ("androidx.compose.animation:animation:1.3.0")
+    implementation ("androidx.compose.foundation:foundation:1.3.0")
+    implementation ("androidx.compose.material:material:1.3.0")
     implementation("androidx.compose.material:material-icons-extended")
     implementation("androidx.activity:activity-compose:1.9.0")
     implementation("androidx.navigation:navigation-compose:2.7.7")
