@@ -1,16 +1,14 @@
 package com.example.todolist.navigation
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.todolist.screens.HomeScreen.HomeScreen
-import com.example.todolist.screens.TaskListScreen.TaskScreen
+import com.example.todolist.screens.home.HomeScreen
+import com.example.todolist.screens.taskList.TaskScreen
+import com.example.todolist.screens.details.DetailsScreen
 
 @Composable
 fun AppNavHost(navController: NavHostController, modifier: Modifier = Modifier) {
@@ -37,12 +35,6 @@ fun AppNavHost(navController: NavHostController, modifier: Modifier = Modifier) 
     }
 }
 
-@Composable
-fun DetailsScreen(detailsArg: Int?) {
-    Box(modifier = Modifier.fillMaxSize()){
-        Text(text = detailsArg.toString()?:"")
-    }
-}
 
 fun NavHostController.navigateSingleTopTo(route: String) =
     this.navigate(route) {

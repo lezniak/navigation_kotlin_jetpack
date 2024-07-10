@@ -1,4 +1,4 @@
-package com.example.todolist.screens.TaskListScreen
+package com.example.todolist.screens.taskList
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
