@@ -2,18 +2,18 @@ package com.example.todolist.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.todolist.screens.TaskScreen
+import com.example.todolist.screens.HomeScreen.HomeScreen
+import com.example.todolist.screens.TaskListScreen.TaskScreen
 
 @Composable
 fun AppNavHost(navController: NavHostController, modifier: Modifier = Modifier) {
     NavHost(navController = navController, startDestination = Home.route,modifier = modifier){
         composable(route = Home.route){
-            TaskScreen()
+            HomeScreen()
         }
         composable(route = List.route){
             TaskScreen()
