@@ -48,7 +48,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun TaskScreen(modifier: Modifier = Modifier) {
-
+    TaskList(modifier = modifier)
 }
 
 @Composable
