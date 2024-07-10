@@ -49,4 +49,4 @@ data object Details : AppDestionation{
     )
 
 }
-val tabListScreens = listOf(Home,List,Notes)
+val tabListScreens = listOf(Home,List)
