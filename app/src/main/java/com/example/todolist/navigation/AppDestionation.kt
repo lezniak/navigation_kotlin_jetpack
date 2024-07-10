@@ -1,10 +1,14 @@
 package com.example.todolist.navigation
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Details
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.NoteAlt
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
+import androidx.navigation.navDeepLink
 
 sealed interface AppDestionation {
     val icon : ImageVector
@@ -33,4 +37,16 @@ data object Notes : AppDestionation{
         get() = "notes"
 }
 
+data object Details : AppDestionation{
+    override val icon: ImageVector
+        get() = Icons.Default.Details
+    override val route: String
+        get() = "details"
+    var detailsArg = "detail_arg"
+    val routeWithArgs = "$route/{$detailsArg}"
+    val arguments = listOf(
+        navArgument(detailsArg) { type = NavType.IntType }
+    )
+
+}
 val tabListScreens = listOf(Home,List,Notes)

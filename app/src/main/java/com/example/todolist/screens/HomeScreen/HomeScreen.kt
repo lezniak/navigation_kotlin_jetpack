@@ -1,8 +1,8 @@
 package com.example.todolist.screens.HomeScreen
 
-import android.util.Log
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -14,7 +14,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -24,12 +23,12 @@ import androidx.compose.ui.unit.dp
 import com.example.todolist.model.CounterItem
 
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier) {
-    HomeGrid(modifier)
+fun HomeScreen(onClick: (Int) -> Unit) {
+    HomeGrid(onClick)
 }
 
 @Composable
-private fun HomeGrid(modifier: Modifier = Modifier) {
+private fun HomeGrid(onNavigate: (Int) -> Unit) {
     val items = remember {
         mutableStateListOf<CounterItem>().apply {
             addAll(listOf(CounterItem(0,Color.Green), CounterItem(0,Color.Red), CounterItem(0,Color.Black), CounterItem(0,Color.Blue)))
@@ -49,28 +48,24 @@ private fun HomeGrid(modifier: Modifier = Modifier) {
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         items(items) { item ->
-            SquareBox(item.color, onClick = { item.count++ },item.count)
+            SquareBox(item.color, onClick = { item.count++ },item.count,onNavigate)
         }
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun SquareBox(color: Color, onClick : () -> Unit, count: Int) {
+fun SquareBox(color: Color, onClick : () -> Unit, count: Int,onNavigate: (Int) -> Unit) {
     Box(
         modifier = Modifier
             .size(height = 100.dp+count.dp, width = 100.dp)
             .background(color)
             .padding(16.dp)
-            .clickable {
-                onClick()
-            }
+            .combinedClickable(
+                onClick = { onClick() },
+                onLongClick = { onNavigate(count) },
+            )
     ){
-        Text(text = "CZESC $count", color = Color.White)
+        Text(text = "Count $count", color = Color.White)
     }
-}
-
-@Preview
-@Composable
-private fun Prewiew() {
-    HomeGrid()
 }

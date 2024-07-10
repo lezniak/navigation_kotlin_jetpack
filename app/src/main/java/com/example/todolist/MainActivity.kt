@@ -6,6 +6,10 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -16,8 +20,10 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.todolist.common.AppBar
 import com.example.todolist.common.AppTabRow
+import com.example.todolist.navigation.AppDestionation
 import com.example.todolist.navigation.AppNavHost
 import com.example.todolist.navigation.Home
+import com.example.todolist.navigation.List
 import com.example.todolist.navigation.navigateSingleTopTo
 import com.example.todolist.navigation.tabListScreens
 import com.example.todolist.ui.theme.TodoListTheme
@@ -41,11 +47,18 @@ fun MainApp() {
         tabListScreens.find { it.route == currentDestination?.route } ?: Home
 
     Scaffold(
-        topBar =  {
-
-        },
         bottomBar = {
             AppTabRow(allScreens = tabListScreens, onTabSelected = { screen -> navController.navigateSingleTopTo(screen.route)},currentScreen = currentScreen)
+        },
+        floatingActionButton = {
+            if (currentScreen == List) {
+                FloatingActionButton(onClick = {
+
+                }) {
+                    Icon(imageVector = Icons.Default.Add, contentDescription = "add")
+                }
+            }
+
         }
     ) { innerPadding ->
         AppNavHost(navController = navController,Modifier.padding(innerPadding))
