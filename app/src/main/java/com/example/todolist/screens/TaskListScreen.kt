@@ -58,7 +58,6 @@ fun TaskCard(
     onClear: (Task) -> Unit,
     onExtendedChange: (Boolean) -> Unit
 ) {
-
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -77,9 +76,9 @@ fun TaskCard(
                 ) {
                     Text(text = title)
                     Row() {
-                        IconButton(onClick = { onExtendedChange(!isExtended.value) }) {
+                        IconButton(onClick = { onExtendedChange(!task.isExtended) }) {
                             Image(
-                                imageVector = if (!isExtended.value) Icons.Default.ExpandMore else Icons.Default.ExpandLess,
+                                imageVector = if (task.isExtended) Icons.Default.ExpandMore else Icons.Default.ExpandLess,
                                 contentDescription = null
                             )
                         }
@@ -89,7 +88,7 @@ fun TaskCard(
                     }
 
                 }
-                if (isExtended.value) {
+                if (task.isExtended) {
                     HorizontalDivider(color = Color.Black, thickness = 1.dp)
                     Text(text = "1999.20.20")
                     Spacer(modifier = Modifier.height(8.dp))
@@ -107,7 +106,7 @@ fun TaskList(modifier: Modifier = Modifier) {
     val array = remember {
         mutableStateListOf<Task>().apply {
             for (i in 0..10) {
-                add(Task(i.toString(), i.toString(), mutableStateOf(false)))
+                add(Task(i.toString(), i.toString(), false))
             }
         }
     }
@@ -117,7 +116,7 @@ fun TaskList(modifier: Modifier = Modifier) {
             TaskCard(
                 modifier = Modifier.animateItemPlacement(),
                 task = item,
-                onExtendedChange = { bool -> item.isExtended.value = bool },
+                onExtendedChange = { bool -> item.isExtended = bool },
                 onClear = {
                     array.remove(item)
                 })
